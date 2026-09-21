@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#0b0f14">
+  <title>兎に角 - モバイルオーダー兼お会計票 印刷システム</title>
+  <link rel="stylesheet" href="css/style.css">
+  <!-- スタンドアローンQRコード描画ライブラリ -->
+  <script src="js/qrcode.min.js"></script>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="app-header">
+    <div class="header-brand">
+      <div class="brand-icon">🧾</div>
+      <div>
+        <div class="brand-title" id="header-store-name">兎 に 角</div>
+        <div class="brand-subtitle">モバイルオーダー 兼 お会計票 印刷</div>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="icon-btn" id="btn-sound-toggle" title="効果音" aria-label="効果音">🔊</button>
+      <button class="icon-btn" id="btn-open-settings" title="設定・プリンター" aria-label="設定">⚙️</button>
+    </div>
+  </header>
+
+  <!-- Navigation Tabs -->
+  <nav class="tab-nav">
+    <button class="tab-btn active" data-tab="tab-tables">📱 卓番一覧 (印刷)</button>
+    <button class="tab-btn" data-tab="tab-preview">👁️ 伝票プレビュー</button>
+    <button class="tab-btn" data-tab="tab-custom">✏️ フリー印字</button>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="main-content">
+
+    <!-- Tab 1: Table Quick Print -->
+    <section class="tab-pane active" id="tab-tables">
+      <div class="section-banner">
+        <div>
+          <div class="banner-text">⚡ 卓番を押すと即座に印刷されます</div>
+          <div class="banner-sub">全29席（フロア配置順）/ 数秒間プレビュー表示後に自動復帰</div>
+        </div>
+      </div>
+
+      <!-- テーブル一覧（ユーザー指定順） -->
+      <div class="table-grid" id="table-grid">
+        <!-- JSで自動生成 -->
+      </div>
+    </section>
+
+    <!-- Tab 2: Receipt Preview -->
+    <section class="tab-pane" id="tab-preview">
+      <div class="preview-container">
+        <div class="receipt-paper" id="receipt-preview-box">
+          <!-- ヘッダー -->
+          <div class="receipt-double-divider">================================</div>
+          <div class="receipt-store" id="prev-store-name">兎 に 角</div>
+          <div class="receipt-badge" id="prev-slip-title">【 モバイルオーダー 兼 お会計票 】</div>
+          <div class="receipt-double-divider">================================</div>
+          
+          <!-- テーブル番号 -->
+          <div id="prev-table-section">
+            <div style="font-size: 12px; color: #555; margin-top: 6px;">テーブル番号</div>
+            <div class="receipt-title" id="prev-table-no">【  T1  】</div>
+            <div class="receipt-divider"></div>
+          </div>
+
+          <!-- ご注文案内 -->
+          <div class="receipt-text" id="prev-order-guide">
+            <div style="font-weight: bold; margin-bottom: 2px;">◆ ご 注 文 ◆</div>
+            <div>スマートフォンで下のQRコードを読み取り<br>各自でご注文をお願いいたします</div>
+          </div>
+          
+          <!-- QRコードボックス -->
+          <div class="receipt-qr-box" id="prev-qr-box"></div>
+
+          <!-- お会計案内 -->
+          <div class="receipt-divider"></div>
+          <div class="receipt-checkout" id="prev-checkout-section">
+            <div style="font-weight: bold; margin-bottom: 6px;">◆ お 会 計 ◆</div>
+            <div class="checkout-highlight">【この伝票をレジへお持ちください】</div>
+          </div>
+
+          <!-- フッター -->
+          <div class="receipt-double-divider" style="margin-top: 10px;">================================</div>
+          <div class="receipt-footer" id="prev-footer">
+            発行日時: 2026/09/21 20:30
+          </div>
+          <div class="receipt-double-divider">================================</div>
+        </div>
+
+        <div style="margin-top: 20px; width: 100%; max-width: 360px;">
+          <button class="btn-primary" id="btn-print-preview">
+            <span>🖨️ この伝票を印刷する</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: Free Custom Print -->
+    <section class="tab-pane" id="tab-custom">
+      <div class="form-card">
+        <div class="quick-templates">
+          <span style="font-size: 12px; color: var(--text-secondary); align-self: center;">定型文:</span>
+          <button class="template-chip" data-tpl="wifi">📶 店内Wi-Fi案内</button>
+          <button class="template-chip" data-tpl="line">💬 LINE友だち追加</button>
+          <button class="template-chip" data-tpl="review">⭐ Google口コミ</button>
+          <button class="template-chip" data-tpl="memo">📝 厨房への連絡メモ</button>
+        </div>
+
+        <div class="form-group">
+          <label for="custom-title">タイトル</label>
+          <input type="text" id="custom-title" class="form-input" placeholder="例: 店内Wi-Fi接続案内">
+        </div>
+
+        <div class="form-group">
+          <label for="custom-body">本文（改行可）</label>
+          <textarea id="custom-body" class="form-textarea" placeholder="SSID: tonikaku-guest&#10;PASS: 12345678"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="custom-qr">QRコードの内容 (URLまたはテキスト / 空欄可)</label>
+          <input type="text" id="custom-qr" class="form-input" placeholder="https://lin.ee/xxxxxxx">
+          <div class="form-help">※入力するとQRコードが生成されて印刷されます。</div>
+        </div>
+
+        <div class="form-group">
+          <label for="custom-footer">フッター注釈（空欄可）</label>
+          <input type="text" id="custom-footer" class="form-input" placeholder="※ご不明な点はスタッフまで">
+        </div>
+
+        <button class="btn-primary" id="btn-print-custom">
+          <span>🖨️ この内容で印刷する</span>
+        </button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============================================================
+       ★ バーチャルサーマルプリンター印刷演出モーダル
+       ============================================================ -->
+  <div class="print-overlay" id="print-overlay">
+    <div class="printer-device-card">
+      <!-- プリンター本体上部 & LED -->
+      <div class="printer-casing-top">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <div class="led-indicator"></div>
+          <span class="printer-device-name">EPSON TM-m30Ⅱ</span>
+        </div>
+        <span class="printer-status-text" id="anim-status-text">印字送信中...</span>
+      </div>
+
+      <!-- 排紙口スリット -->
+      <div class="printer-slot-slit"></div>
+
+      <!-- 排紙ステージ（伝票がスルスルと出てくるアニメーション） -->
+      <div class="paper-feed-stage">
+        <div class="laser-scan-line"></div>
+        <div class="animated-receipt" id="anim-receipt">
+          <div class="receipt-double-divider">================================</div>
+          <div class="receipt-store" id="anim-store-name">兎 に 角</div>
+          <div class="receipt-badge" id="anim-slip-badge">【 モバイルオーダー 兼 お会計票 】</div>
+          <div class="receipt-double-divider">================================</div>
+          
+          <div style="font-size: 11px; color: #555; margin-top: 4px;">テーブル番号</div>
+          <div class="receipt-title" id="anim-table-no">【  T1  】</div>
+          <div class="receipt-divider"></div>
+
+          <div class="receipt-text" id="anim-order-guide">
+            <div style="font-weight: bold; margin-bottom: 2px;">◆ ご 注 文 ◆</div>
+            <div>スマートフォンで下のQRコードを読み取り<br>各自でご注文をお願いいたします</div>
+          </div>
+          
+          <div class="receipt-qr-box" id="anim-qr-box"></div>
+
+          <div class="receipt-divider"></div>
+          <div id="anim-checkout-section">
+            <div style="font-weight: bold; margin-bottom: 4px;">◆ お 会 計 ◆</div>
+            <div class="checkout-highlight">【この伝票をレジへお持ちください】</div>
+          </div>
+
+          <div class="receipt-double-divider" style="margin-top: 6px;">================================</div>
+          <div class="receipt-footer" id="anim-footer">
+            発行日時: 2026/09/21 21:00
+          </div>
+        </div>
+      </div>
+
+      <!-- 自動クローズ / スキップボタン -->
+      <div class="printer-dismiss-bar">
+        <button class="btn-dismiss" id="btn-close-anim">
+          <span>閉じる (<span id="anim-countdown">2.5</span>秒)</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Settings Modal -->
+  <div class="modal-overlay" id="settings-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title">⚙️ システム設定 & プリンター指定</div>
+        <button class="icon-btn" id="btn-close-settings">✕</button>
+      </div>
+
+      <!-- プリンター指定の解説カード -->
+      <div style="background: rgba(31, 111, 235, 0.1); border: 1px solid rgba(31, 111, 235, 0.3); border-radius: 8px; padding: 12px; margin-bottom: 16px;">
+        <div style="font-size: 13px; font-weight: bold; color: #58a6ff; margin-bottom: 4px;">🖨️ 3台あるプリンターの指定方法</div>
+        <div style="font-size: 11px; color: var(--text-secondary); line-height: 1.6;">
+          本アプリは端末の公式アプリ<strong>「Epson TM Print Assistant」</strong>経由で印刷します。<br>
+          出力先プリンターを変更したい場合は、端末の「Epson TM Print Assistant」アプリを開き、<strong>「プリンターの選択」から出力したいTM-m30Ⅱ（IPアドレス）を選択</strong>してください。<br>
+          <span style="color: #7ee787;">💡おすすめ: 料理伝票で忙しい厨房用ではなく、「レジ横」または「ホール用」のプリンターを指定すると、お客様案内がスムーズになりDiniiとの衝突も完全回避できます。</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="cfg-store-name">店舗名（伝票最上部に印字）</label>
+        <input type="text" id="cfg-store-name" class="form-input" value="兎 に 角">
+      </div>
+
+      <div class="form-group">
+        <label for="cfg-paper-width">用紙幅</label>
+        <select id="cfg-paper-width" class="form-select">
+          <option value="80" selected>80mm 幅 (標準)</option>
+          <option value="58">58mm 幅</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="cfg-qr-size">QRコード印字サイズ</label>
+        <select id="cfg-qr-size" class="form-select">
+          <option value="6">小 (モジュール 6)</option>
+          <option value="7" selected>中 (モジュール 7 - 標準推奨)</option>
+          <option value="8">大 (モジュール 8)</option>
+        </select>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-secondary" id="btn-reset-settings">初期値に戻す</button>
+        <button class="btn-primary" id="btn-save-settings" style="width: auto;">保存する</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast" id="toast-notify"></div>
+
+  <!-- Scripts -->
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

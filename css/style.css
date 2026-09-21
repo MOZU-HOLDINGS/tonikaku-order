@@ -1,0 +1,850 @@
+/* 
+ * style.css
+ * 兎に角 - 店舗用クイックQR・モバイルオーダー兼お会計票 印刷システム
+ * プレミアム・レスポンシブ・触感フィードバック POSデザイン
+ */
+
+:root {
+  --bg-color: #0b0f14;
+  --bg-gradient: radial-gradient(circle at 50% 0%, #172331 0%, #0b0f14 75%);
+  --surface-color: rgba(22, 27, 34, 0.85);
+  --surface-card: #161b22;
+  --surface-hover: #212833;
+  --border-color: rgba(255, 255, 255, 0.09);
+  --border-active: #388bfd;
+  --text-primary: #f0f6fc;
+  --text-secondary: #8b949e;
+  --text-muted: #555e69;
+  --accent-green: #10b981;
+  --accent-green-glow: rgba(16, 185, 129, 0.35);
+  --accent-blue: #2563eb;
+  --accent-cyan: #06b6d4;
+  --accent-amber: #f59e0b;
+  --receipt-bg: #fafafa;
+  --receipt-text: #111827;
+  --radius-xs: 6px;
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --shadow-lg: 0 20px 40px -15px rgba(0, 0, 0, 0.7);
+  --shadow-glow: 0 0 20px rgba(16, 185, 129, 0.25);
+  --font-mono: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", "Hiragino Sans", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+  background: var(--bg-color);
+  background-image: var(--bg-gradient);
+  background-attachment: fixed;
+  color: var(--text-primary);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  line-height: 1.5;
+  user-select: none;
+  overflow-x: hidden;
+}
+
+/* App Header */
+.app-header {
+  background: var(--surface-color);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border-color);
+  padding: 12px 18px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.header-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-icon {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  box-shadow: var(--shadow-glow);
+}
+
+.brand-title {
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  background: linear-gradient(90deg, #ffffff 0%, #d1d5db 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.brand-subtitle {
+  font-size: 11px;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.icon-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  width: 42px;
+  height: 42px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 18px;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.icon-btn:active {
+  transform: scale(0.92);
+  background: rgba(255, 255, 255, 0.12);
+}
+
+/* Mode Navigation Tabs */
+.tab-nav {
+  display: flex;
+  background: rgba(18, 22, 28, 0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border-color);
+  padding: 0 16px;
+  gap: 6px;
+  overflow-x: auto;
+}
+
+.tab-btn {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  padding: 14px 18px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  position: relative;
+  white-space: nowrap;
+  transition: color 0.2s ease;
+  letter-spacing: 0.02em;
+}
+
+.tab-btn.active {
+  color: #fff;
+}
+
+.tab-btn.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 12px;
+  right: 12px;
+  height: 3px;
+  background: linear-gradient(90deg, #10b981, #06b6d4);
+  border-radius: 3px 3px 0 0;
+  box-shadow: 0 -2px 8px rgba(16, 185, 129, 0.5);
+}
+
+/* Main Container */
+.main-content {
+  flex: 1;
+  padding: 16px;
+  max-width: 960px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.tab-pane {
+  display: none;
+}
+
+.tab-pane.active {
+  display: block;
+  animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Banner */
+.section-banner {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.12) 0%, rgba(6, 182, 212, 0.08) 100%);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  border-radius: var(--radius-md);
+  padding: 14px 18px;
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.banner-text {
+  font-size: 14px;
+  font-weight: 700;
+  color: #34d399;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.banner-sub {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-top: 3px;
+}
+
+/* Table Quick Select Grid */
+.table-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(82px, 1fr));
+  gap: 11px;
+  margin-bottom: 28px;
+}
+
+@media (min-width: 600px) {
+  .table-grid {
+    grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+    gap: 13px;
+  }
+}
+
+/* Tactile 3D Table Button */
+.table-btn {
+  background: linear-gradient(160deg, #1f2733 0%, #151b24 100%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 3px solid rgba(0, 0, 0, 0.6);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  padding: 14px 4px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  cursor: pointer;
+  transition: all 0.15s cubic-bezier(0.2, 0.8, 0.2, 1);
+  min-height: 80px;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.35);
+  position: relative;
+  overflow: hidden;
+}
+
+.table-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+}
+
+.table-btn .tbl-num {
+  font-size: 23px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #ffffff;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  transition: transform 0.15s ease;
+}
+
+.table-btn .tbl-sub {
+  font-size: 10px;
+  color: #38bdf8;
+  font-weight: 700;
+  background: rgba(56, 189, 248, 0.15);
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  padding: 1px 6px;
+  border-radius: 4px;
+  letter-spacing: 0.02em;
+}
+
+/* Click / Tap feedback: Real tactile press! */
+.table-btn:active {
+  transform: translateY(3px) scale(0.96);
+  border-bottom-width: 1px;
+  background: linear-gradient(160deg, #10b981 0%, #059669 100%);
+  border-color: #10b981;
+  box-shadow: 0 2px 8px var(--accent-green-glow);
+}
+
+.table-btn:active .tbl-num {
+  transform: scale(1.05);
+}
+
+.table-btn:active .tbl-sub {
+  background: rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+  border-color: transparent;
+}
+
+/* ============================================================
+   ★ THE PRINTING ANIMATION MODAL (Virtual Thermal Printer)
+   ============================================================ */
+.print-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(5, 8, 13, 0.85);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+
+.print-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.printer-device-card {
+  width: 100%;
+  max-width: 360px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform: scale(0.92);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.print-overlay.active .printer-device-card {
+  transform: scale(1);
+}
+
+/* Virtual Printer Top Casing */
+.printer-casing-top {
+  width: 100%;
+  background: linear-gradient(180deg, #2a3342 0%, #1e2430 100%);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+  position: relative;
+  z-index: 10;
+}
+
+.printer-casing-top .led-indicator {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 10px #10b981;
+  animation: ledPulse 0.8s infinite alternate;
+}
+
+@keyframes ledPulse {
+  from { opacity: 0.4; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1.15); box-shadow: 0 0 14px #10b981; }
+}
+
+.printer-device-name {
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  color: #e2e8f0;
+}
+
+.printer-status-text {
+  font-size: 11px;
+  color: #34d399;
+  font-weight: 600;
+}
+
+/* Printer Paper Exit Slit */
+.printer-slot-slit {
+  width: 100%;
+  height: 8px;
+  background: #090c10;
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: inset 0 3px 6px rgba(0, 0, 0, 0.8);
+  position: relative;
+  z-index: 9;
+}
+
+/* Paper Feed Stage */
+.paper-feed-stage {
+  width: 100%;
+  overflow: hidden;
+  max-height: 480px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
+/* Sliding Receipt Paper */
+.animated-receipt {
+  background-color: var(--receipt-bg);
+  color: var(--receipt-text);
+  width: 92%;
+  padding: 20px 18px;
+  border-radius: 0 0 4px 4px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.4;
+  text-align: center;
+  box-shadow: var(--shadow-lg);
+  position: relative;
+  /* Slithering down animation */
+  transform: translateY(-100%);
+  animation: none;
+}
+
+.print-overlay.active .animated-receipt {
+  animation: paperRollDown 1.0s cubic-bezier(0.12, 0.8, 0.2, 1) forwards;
+}
+
+@keyframes paperRollDown {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0.5;
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(0%);
+    opacity: 1;
+  }
+}
+
+/* Bottom jagged edge for receipt */
+.animated-receipt::after {
+  content: '';
+  position: absolute;
+  bottom: -6px;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background-size: 12px 6px;
+  background-image: linear-gradient(45deg, var(--bg-color) 4px, transparent 0), linear-gradient(-45deg, var(--bg-color) 4px, transparent 0);
+}
+
+/* Laser scan line effect during printing */
+.laser-scan-line {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #10b981, #38bdf8, transparent);
+  box-shadow: 0 0 8px #10b981;
+  opacity: 0;
+}
+
+.print-overlay.active .laser-scan-line {
+  animation: scanLaser 1.1s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+@keyframes scanLaser {
+  0% { top: 0%; opacity: 1; }
+  90% { top: 98%; opacity: 1; }
+  100% { top: 100%; opacity: 0; }
+}
+
+/* Dismiss / Success Footer */
+.printer-dismiss-bar {
+  margin-top: 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 92%;
+}
+
+.btn-dismiss {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  padding: 12px;
+  font-size: 14px;
+  font-weight: 700;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  backdrop-filter: blur(8px);
+}
+
+.btn-dismiss:active {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.countdown-pill {
+  font-size: 12px;
+  color: #34d399;
+  font-weight: bold;
+}
+
+/* ============================================================
+   RECEIPT STYLES
+   ============================================================ */
+.receipt-double-divider {
+  font-size: 9px;
+  letter-spacing: -0.05em;
+  color: #444;
+  margin: 5px 0;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.receipt-divider {
+  border-top: 1px dashed #777;
+  margin: 8px 0;
+}
+
+.receipt-store {
+  font-size: 22px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  margin: 2px 0 1px;
+}
+
+.receipt-badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 800;
+  border: 1px solid #222;
+  padding: 2px 8px;
+  margin: 3px 0;
+}
+
+.receipt-title {
+  font-size: 36px;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  margin: 0;
+  color: #000;
+}
+
+.receipt-text {
+  font-size: 12px;
+  color: #333;
+  margin-bottom: 6px;
+  line-height: 1.4;
+}
+
+.receipt-qr-box {
+  width: 148px;
+  height: 148px;
+  margin: 8px auto;
+  border: 2px solid #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  padding: 5px;
+}
+
+.receipt-qr-box img, .receipt-qr-box canvas {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+}
+
+.checkout-highlight {
+  font-size: 14px;
+  font-weight: 900;
+  background: #000;
+  color: #fff;
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 2px;
+  margin: 3px 0;
+  letter-spacing: 0.02em;
+}
+
+.receipt-footer {
+  font-size: 10px;
+  color: #666;
+  margin-top: 5px;
+}
+
+/* Static Receipt Preview Panel */
+.preview-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.receipt-paper {
+  background-color: var(--receipt-bg);
+  color: var(--receipt-text);
+  width: 100%;
+  max-width: 360px;
+  padding: 24px 20px;
+  box-shadow: var(--shadow-lg);
+  border-radius: 2px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.4;
+  position: relative;
+  text-align: center;
+  overflow: hidden;
+}
+
+.receipt-paper::before, .receipt-paper::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background-size: 12px 6px;
+}
+
+.receipt-paper::before {
+  top: 0;
+  background-image: linear-gradient(135deg, var(--bg-color) 4px, transparent 0), linear-gradient(-135deg, var(--bg-color) 4px, transparent 0);
+}
+
+.receipt-paper::after {
+  bottom: 0;
+  background-image: linear-gradient(45deg, var(--bg-color) 4px, transparent 0), linear-gradient(-45deg, var(--bg-color) 4px, transparent 0);
+}
+
+/* Free Custom Print Form */
+.form-card {
+  background: var(--surface-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 22px;
+  margin-bottom: 20px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: var(--text-secondary);
+}
+
+.form-input, .form-textarea, .form-select {
+  width: 100%;
+  background: rgba(11, 15, 20, 0.8);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  padding: 12px 14px;
+  font-size: 16px;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.form-input:focus, .form-textarea:focus, .form-select:focus {
+  border-color: #38bdf8;
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2);
+}
+
+.form-textarea {
+  min-height: 90px;
+  resize: vertical;
+}
+
+.form-help {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-top: 4px;
+}
+
+.quick-templates {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.template-chip {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  padding: 6px 13px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.template-chip:active {
+  background: #2563eb;
+  color: #fff;
+  border-color: transparent;
+}
+
+/* Action Buttons */
+.btn-primary {
+  width: 100%;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  border: none;
+  border-radius: var(--radius-md);
+  color: white;
+  padding: 16px;
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 4px 15px var(--accent-green-glow);
+  transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-primary:active {
+  transform: scale(0.98);
+  filter: brightness(1.1);
+}
+
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  padding: 12px 18px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.btn-secondary:active {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(10px);
+  z-index: 400;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.modal-overlay.open {
+  display: flex;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.modal-card {
+  background: #161b22;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  width: 100%;
+  max-width: 520px;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 24px;
+  box-shadow: var(--shadow-lg);
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.modal-title {
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.modal-footer {
+  margin-top: 24px;
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: rgba(22, 27, 34, 0.95);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  padding: 12px 22px;
+  border-radius: 30px;
+  font-size: 14px;
+  font-weight: 700;
+  box-shadow: var(--shadow-lg);
+  z-index: 600;
+  pointer-events: none;
+  transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.2s ease;
+  opacity: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.toast.show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+
+.toast.success {
+  border-color: #10b981;
+  background: rgba(16, 185, 129, 0.15);
+  color: #6ee7b7;
+}
+
+.toast.error {
+  border-color: var(--accent-red);
+  background: rgba(218, 54, 51, 0.2);
+}
