@@ -448,7 +448,7 @@ class App {
     this.prevOrderGuide.style.display = 'block';
     this.prevOrderGuide.innerHTML = `
       <div style="font-weight: bold; margin-bottom: 2px;">◆ ご 注 文 ◆</div>
-      <div>スマートフォンで下のQRコードを読み取り<br>各自でご注文をお願いいたします</div>
+      <div>スマートフォンで下の<br>QRコードを読み取り<br>各自でご注文をお願いいたします</div>
     `;
 
     this.prevCheckoutSection.style.display = 'block';
