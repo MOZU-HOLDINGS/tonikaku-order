@@ -432,7 +432,8 @@ class App {
     const returnUrl = encodeURIComponent(window.location.href);
 
     // Epson TM Print Assistant の公式URLスキーム
-    const schemeUrl = `tmprintassistant://print?ver=1&data-type=eposprintxml&data=${encodedXml}&success=${returnUrl}&error-dialog=yes`;
+    // ホスト名は必ず "tmprintassistant.epson.com" を指定（tmprintassistant://print だと host 401 エラーになる）
+    const schemeUrl = `tmprintassistant://tmprintassistant.epson.com/print?ver=1&data-type=eposprintxml&error-dialog=yes&data=${encodedXml}&success=${returnUrl}`;
 
     window.location.href = schemeUrl;
   }

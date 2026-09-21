@@ -50,44 +50,40 @@ export function buildTableQrXml({
     : '------------------------------------------------\n';
 
   return `<?xml version="1.0" encoding="utf-8"?>
-<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">
-  <s:Body>
-    <epos-print xmlns="http://www.epson-pos.com/schemas/2011/03/epos-print">
-      <!-- 初期化 & 中央揃え -->
-      <text align="center"/>
+<epos-print xmlns="http://www.epson-pos.com/schemas/2011/03/epos-print">
+  <!-- 初期化 & 中央揃え -->
+  <text align="center"/>
 
-      <!-- ヘッダー: 店舗名 & 伝票種別 -->
-      <text>${doubleSep}</text>
-      <text width="2" height="2">${escapeXml(storeName)}\n</text>
-      <text width="1" height="1">【 モバイルオーダー 兼 お会計票 】\n</text>
-      <text>${doubleSep}\n</text>
+  <!-- ヘッダー: 店舗名 & 伝票種別 -->
+  <text>${doubleSep}</text>
+  <text width="2" height="2">${escapeXml(storeName)}\n</text>
+  <text width="1" height="1">【 モバイルオーダー 兼 お会計票 】\n</text>
+  <text>${doubleSep}\n</text>
 
-      <!-- テーブル番号（スタッフ・レジ・お客様から一番見えやすい特大サイズ） -->
-      <text width="1" height="1">テーブル番号\n</text>
-      <text width="2" height="2">【  ${escapeXml(tableNo)}  】\n\n</text>
-      <text>${singleSep}</text>
+  <!-- テーブル番号（スタッフ・レジ・お客様から一番見えやすい特大サイズ） -->
+  <text width="1" height="1">テーブル番号\n</text>
+  <text width="2" height="2">【  ${escapeXml(tableNo)}  】\n\n</text>
+  <text>${singleSep}</text>
 
-      <!-- ご注文案内 -->
-      <text width="1" height="1">◆ ご 注 文 ◆\n</text>
-      <text width="1" height="1">スマートフォンで下のQRコードを読み取り\n各自でご注文をお願いいたします\n\n</text>
+  <!-- ご注文案内 -->
+  <text width="1" height="1">◆ ご 注 文 ◆\n</text>
+  <text width="1" height="1">スマートフォンで下のQRコードを読み取り\n各自でご注文をお願いいたします\n\n</text>
 
-      <!-- QRコード印字 (Model 2, Error Correction Level M) -->
-      <symbol type="qrcode_model_2" level="level_m" width="${Math.max(4, Math.min(10, qrSize))}">${escapeXml(orderUrl)}</symbol>
-      <feed unit="20"/>
+  <!-- QRコード印字 (Model 2, Error Correction Level M) -->
+  <symbol type="qrcode_model_2" level="level_m" width="${Math.max(4, Math.min(10, qrSize))}">${escapeXml(orderUrl)}</symbol>
+  <feed unit="20"/>
 
-      <!-- お会計案内（レジ持参スタイル） -->
-      <text>${singleSep}</text>
-      <text width="1" height="1">◆ お 会 計 ◆\n</text>
-      <text width="2" height="1">【この伝票をレジへお持ちください】\n\n</text>
-      <text>${doubleSep}</text>
+  <!-- お会計案内（レジ持参スタイル） -->
+  <text>${singleSep}</text>
+  <text width="1" height="1">◆ お 会 計 ◆\n</text>
+  <text width="2" height="1">【この伝票をレジへお持ちください】\n\n</text>
+  <text>${doubleSep}</text>
 
-      <!-- 発行日時 & カット -->
-      <text font="font_b">発行日時: ${getFormattedDate()}\n</text>
-      <feed unit="30"/>
-      <cut type="feed"/>
-    </epos-print>
-  </s:Body>
-</s:Envelope>`.trim();
+  <!-- 発行日時 & カット -->
+  <text font="font_b">発行日時: ${getFormattedDate()}\n</text>
+  <feed unit="30"/>
+  <cut type="feed"/>
+</epos-print>`.trim();
 }
 
 /**
@@ -115,40 +111,36 @@ export function buildCustomPrintXml({
   }
 
   return `<?xml version="1.0" encoding="utf-8"?>
-<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">
-  <s:Body>
-    <epos-print xmlns="http://www.epson-pos.com/schemas/2011/03/epos-print">
-      <text align="center"/>
-      ${storeName ? `
-      <text>${doubleSep}</text>
-      <text width="2" height="2">${escapeXml(storeName)}\n</text>
-      <text>${doubleSep}\n</text>
-      ` : ''}
+<epos-print xmlns="http://www.epson-pos.com/schemas/2011/03/epos-print">
+  <text align="center"/>
+  ${storeName ? `
+  <text>${doubleSep}</text>
+  <text width="2" height="2">${escapeXml(storeName)}\n</text>
+  <text>${doubleSep}\n</text>
+  ` : ''}
 
-      <!-- タイトル -->
-      ${title ? `<text width="2" height="2">${escapeXml(title)}\n\n</text>` : ''}
+  <!-- タイトル -->
+  ${title ? `<text width="2" height="2">${escapeXml(title)}\n\n</text>` : ''}
 
-      <!-- 本文 (左揃え) -->
-      ${bodyText ? `
-      <text align="left" width="1" height="1"/>
-      <text>${escapeXml(bodyText)}\n\n</text>
-      <text align="center"/>
-      ` : ''}
+  <!-- 本文 (左揃え) -->
+  ${bodyText ? `
+  <text align="left" width="1" height="1"/>
+  <text>${escapeXml(bodyText)}\n\n</text>
+  <text align="center"/>
+  ` : ''}
 
-      <!-- QRコード（存在する場合） -->
-      ${qrXml}
+  <!-- QRコード（存在する場合） -->
+  ${qrXml}
 
-      <text>${singleSep}</text>
-      ${footerText ? `<text font="font_b">${escapeXml(footerText)}\n</text>` : ''}
-      <text font="font_b">発行日時: ${getFormattedDate()}\n</text>
-      <text>${doubleSep}</text>
+  <text>${singleSep}</text>
+  ${footerText ? `<text font="font_b">${escapeXml(footerText)}\n</text>` : ''}
+  <text font="font_b">発行日時: ${getFormattedDate()}\n</text>
+  <text>${doubleSep}</text>
 
-      <!-- 送り & カット -->
-      <feed unit="30"/>
-      <cut type="feed"/>
-    </epos-print>
-  </s:Body>
-</s:Envelope>`.trim();
+  <!-- 送り & カット -->
+  <feed unit="30"/>
+  <cut type="feed"/>
+</epos-print>`.trim();
 }
 
 /**
