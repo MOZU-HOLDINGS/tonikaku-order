@@ -37,15 +37,26 @@ function escapeXml(str) {
  * @returns {string} ePOS-Print XML文字列
  */
 /**
+ * 半角1列、全角2列で文字列の表示幅（桁数）を計算
+ */
+function getDisplayWidth(str) {
+  let len = 0;
+  for (let i = 0; i < str.length; i++) {
+    const code = str.charCodeAt(i);
+    if ((code >= 0x0020 && code <= 0x007e) || (code >= 0xff61 && code <= 0xff9f)) {
+      len += 1;
+    } else {
+      len += 2;
+    }
+  }
+  return len;
+}
+
+/**
  * 58mm (32〜35桁) 幅の黒背景白文字バナー文字列（左右スペースパディング付き）を生成
  */
 function createReverseBanner(text, targetCols = 32) {
-  let displayWidth = 0;
-  for (let i = 0; i < text.length; i++) {
-    const code = text.charCodeAt(i);
-    // 全角文字・漢字・記号等は2列
-    displayWidth += (code > 0x7f) ? 2 : 1;
-  }
+  const displayWidth = getDisplayWidth(text);
   const pad = Math.max(0, targetCols - displayWidth);
   const leftPad = Math.floor(pad / 2);
   const rightPad = pad - leftPad;

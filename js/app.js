@@ -4,8 +4,8 @@
  * 触感アニメーション・即時印刷・バーチャルサーマルプリンター演出
  */
 
-import { buildTableQrXml, buildCustomPrintXml } from './epos-builder.js?v=2.5';
-import { TABLES_DATA } from './tables-data.js?v=2.5';
+import { buildTableQrXml, buildCustomPrintXml } from './epos-builder.js?v=2.6';
+import { TABLES_DATA } from './tables-data.js?v=2.6';
 
 const DEFAULT_CONFIG = {
   storeName: '兎 に 角',
@@ -603,6 +603,10 @@ class App {
   }
 }
 
-window.addEventListener('DOMContentLoaded', () => {
+if (document.readyState === 'loading') {
+  window.addEventListener('DOMContentLoaded', () => {
+    window.tonikakuApp = new App();
+  });
+} else {
   window.tonikakuApp = new App();
-});
+}
