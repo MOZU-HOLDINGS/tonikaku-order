@@ -58,22 +58,37 @@
       <div class="preview-container">
         <div class="receipt-paper" id="receipt-preview-box">
           <!-- ヘッダー -->
-          <div class="receipt-double-divider">================================</div>
+          <div class="receipt-double-divider">============================================</div>
           <div class="receipt-store" id="prev-store-name">兎 に 角</div>
-          <div class="receipt-badge" id="prev-slip-title">【 モバイルオーダー 兼 お会計票 】</div>
-          <div class="receipt-double-divider">================================</div>
+          <div><span class="receipt-badge-reversed" id="prev-slip-title">モバイルオーダー 兼 お会計票</span></div>
+          <div class="receipt-double-divider">============================================</div>
           
           <!-- テーブル番号 -->
           <div id="prev-table-section">
-            <div style="font-size: 12px; color: #555; margin-top: 6px;">テーブル番号</div>
+            <div style="font-size: 11px; color: #555; margin-top: 4px;">テーブル番号</div>
             <div class="receipt-title" id="prev-table-no">【  T1  】</div>
             <div class="receipt-divider"></div>
           </div>
 
+          <!-- 手書き案内メモ欄（スタッフ記入用） -->
+          <div id="prev-memo-section" class="receipt-memo-card">
+            <div class="receipt-memo-title">【 ご案内プラン（手書きメモ）】</div>
+            <div class="receipt-memo-line">
+              <span>担当: <span class="memo-blank" style="min-width: 48px;"></span></span>
+              <span><span class="memo-blank" style="min-width: 32px;"></span> 名</span>
+              <span><span class="memo-blank" style="min-width: 32px;"></span> H / <span class="memo-blank" style="min-width: 36px;"></span></span>
+            </div>
+            <div class="receipt-memo-line" style="margin-top: 4px;">
+              <span>おと <span class="memo-blank" style="min-width: 42px;"></span></span>
+              <span><span class="memo-blank" style="min-width: 32px;"></span> F</span>
+              <span>他 <span class="memo-blank" style="min-width: 72px;"></span></span>
+            </div>
+          </div>
+
           <!-- ご注文案内 -->
           <div class="receipt-text" id="prev-order-guide">
-            <div style="font-weight: bold; margin-bottom: 2px;">◆ ご 注 文 ◆</div>
-            <div>スマートフォンで下のQRコードを読み取り<br>各自でご注文をお願いいたします</div>
+            <div class="receipt-section-banner">◆ ご 注 文（モバイルオーダー）◆</div>
+            <div>スマートフォンで下の<br>QRコードを読み取り<br>各自でご注文をお願いいたします</div>
           </div>
           
           <!-- QRコードボックス -->
@@ -82,16 +97,17 @@
           <!-- お会計案内 -->
           <div class="receipt-divider"></div>
           <div class="receipt-checkout" id="prev-checkout-section">
-            <div style="font-weight: bold; margin-bottom: 6px;">◆ お 会 計 ◆</div>
-            <div class="checkout-highlight">【この伝票をレジへお持ちください】</div>
+            <div class="receipt-section-banner">◆ お 会 計 票 ◆</div>
+            <div><span class="checkout-highlight">【この伝票をレジへお持ちください】</span></div>
+            <div style="font-size: 10px; color: #555; margin-top: 4px;">※お会計の際、本票をレジカウンターへご提示ください</div>
           </div>
 
           <!-- フッター -->
-          <div class="receipt-double-divider" style="margin-top: 10px;">================================</div>
+          <div class="receipt-double-divider" style="margin-top: 10px;">============================================</div>
           <div class="receipt-footer" id="prev-footer">
-            発行日時: 2026/09/21 20:30
+            発行日時: 2026/10/13 19:20
           </div>
-          <div class="receipt-double-divider">================================</div>
+          <div class="receipt-double-divider">============================================</div>
         </div>
 
         <div style="margin-top: 20px; width: 100%; max-width: 360px;">
@@ -151,7 +167,7 @@
       <div class="printer-casing-top">
         <div style="display: flex; align-items: center; gap: 8px;">
           <div class="led-indicator"></div>
-          <span class="printer-device-name">EPSON TM-m30Ⅱ</span>
+          <span class="printer-device-name">EPSON TM-m30Ⅱ-H</span>
         </div>
         <span class="printer-status-text" id="anim-status-text">印字送信中...</span>
       </div>
@@ -163,17 +179,32 @@
       <div class="paper-feed-stage">
         <div class="laser-scan-line"></div>
         <div class="animated-receipt" id="anim-receipt">
-          <div class="receipt-double-divider">================================</div>
+          <div class="receipt-double-divider">============================================</div>
           <div class="receipt-store" id="anim-store-name">兎 に 角</div>
-          <div class="receipt-badge" id="anim-slip-badge">【 モバイルオーダー 兼 お会計票 】</div>
-          <div class="receipt-double-divider">================================</div>
+          <div><span class="receipt-badge-reversed" id="anim-slip-badge">モバイルオーダー 兼 お会計票</span></div>
+          <div class="receipt-double-divider">============================================</div>
           
           <div style="font-size: 11px; color: #555; margin-top: 4px;">テーブル番号</div>
           <div class="receipt-title" id="anim-table-no">【  T1  】</div>
           <div class="receipt-divider"></div>
 
+          <!-- 手書き案内メモ欄 -->
+          <div id="anim-memo-section" class="receipt-memo-card">
+            <div class="receipt-memo-title">【 ご案内プラン（手書きメモ）】</div>
+            <div class="receipt-memo-line">
+              <span>担当: <span class="memo-blank" style="min-width: 48px;"></span></span>
+              <span><span class="memo-blank" style="min-width: 32px;"></span> 名</span>
+              <span><span class="memo-blank" style="min-width: 32px;"></span> H / <span class="memo-blank" style="min-width: 36px;"></span></span>
+            </div>
+            <div class="receipt-memo-line" style="margin-top: 4px;">
+              <span>おと <span class="memo-blank" style="min-width: 42px;"></span></span>
+              <span><span class="memo-blank" style="min-width: 32px;"></span> F</span>
+              <span>他 <span class="memo-blank" style="min-width: 72px;"></span></span>
+            </div>
+          </div>
+
           <div class="receipt-text" id="anim-order-guide">
-            <div style="font-weight: bold; margin-bottom: 2px;">◆ ご 注 文 ◆</div>
+            <div class="receipt-section-banner">◆ ご 注 文（モバイルオーダー）◆</div>
             <div>スマートフォンで下の<br>QRコードを読み取り<br>各自でご注文をお願いいたします</div>
           </div>
           
@@ -181,13 +212,14 @@
 
           <div class="receipt-divider"></div>
           <div id="anim-checkout-section">
-            <div style="font-weight: bold; margin-bottom: 4px;">◆ お 会 計 ◆</div>
-            <div class="checkout-highlight">【この伝票をレジへお持ちください】</div>
+            <div class="receipt-section-banner">◆ お 会 計 票 ◆</div>
+            <div><span class="checkout-highlight">【この伝票をレジへお持ちください】</span></div>
+            <div style="font-size: 10px; color: #555; margin-top: 4px;">※お会計の際、本票をレジカウンターへご提示ください</div>
           </div>
 
-          <div class="receipt-double-divider" style="margin-top: 6px;">================================</div>
+          <div class="receipt-double-divider" style="margin-top: 6px;">============================================</div>
           <div class="receipt-footer" id="anim-footer">
-            発行日時: 2026/09/21 21:00
+            発行日時: 2026/10/13 19:20
           </div>
         </div>
       </div>
@@ -227,8 +259,25 @@
       <div class="form-group">
         <label for="cfg-paper-width">用紙幅</label>
         <select id="cfg-paper-width" class="form-select">
-          <option value="80" selected>80mm 幅 (標準)</option>
+          <option value="80" selected>80mm 幅 (標準・用紙幅いっぱい)</option>
           <option value="58">58mm 幅</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="cfg-print-direction">印字方向（順序）</label>
+        <select id="cfg-print-direction" class="form-select">
+          <option value="bottom_up" selected>下部から印字（卓番がカット側・おすすめ）</option>
+          <option value="top_down">上部から印字（通常）</option>
+        </select>
+        <div class="form-help">※「下部から印字」にすると、排紙カット時に卓番・店舗名が一番上（手元）に来ます。</div>
+      </div>
+
+      <div class="form-group">
+        <label for="cfg-show-memo">手書き案内メモ欄（スタッフ記入用）</label>
+        <select id="cfg-show-memo" class="form-select">
+          <option value="true" selected>印字する（担当・人数・時間・プラン・おと・F・他）</option>
+          <option value="false">印字しない</option>
         </select>
       </div>
 

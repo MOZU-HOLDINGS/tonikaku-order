@@ -545,6 +545,66 @@ body {
   margin: 3px 0;
 }
 
+.receipt-badge-reversed {
+  display: inline-block;
+  background: #000000;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 3px 12px;
+  margin: 4px 0;
+  letter-spacing: 0.04em;
+  border-radius: 2px;
+}
+
+.receipt-section-banner {
+  display: inline-block;
+  background: #000000;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 3px 10px;
+  margin: 6px auto;
+  letter-spacing: 0.05em;
+  border-radius: 2px;
+}
+
+.receipt-memo-card {
+  border: 1.5px dashed #555;
+  border-radius: 3px;
+  padding: 6px 8px;
+  margin: 8px auto;
+  text-align: left;
+  font-size: 11px;
+  background: #fafafa;
+  color: #111;
+  width: 96%;
+}
+
+.receipt-memo-title {
+  font-weight: 900;
+  font-size: 10px;
+  text-align: center;
+  color: #222;
+  margin-bottom: 4px;
+  letter-spacing: 0.05em;
+}
+
+.receipt-memo-line {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: #222;
+  line-height: 1.6;
+}
+
+.receipt-memo-line .memo-blank {
+  display: inline-block;
+  border-bottom: 1px solid #777;
+  min-width: 32px;
+}
+
 .receipt-title {
   font-size: 36px;
   font-weight: 900;
@@ -579,12 +639,12 @@ body {
 }
 
 .checkout-highlight {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 900;
   background: #000;
   color: #fff;
   display: inline-block;
-  padding: 3px 8px;
+  padding: 4px 10px;
   border-radius: 2px;
   margin: 3px 0;
   letter-spacing: 0.02em;

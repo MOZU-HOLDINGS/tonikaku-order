@@ -11,7 +11,9 @@ const DEFAULT_CONFIG = {
   storeName: '兎 に 角',
   paperWidth: '80',
   qrSize: 7,
-  soundEnabled: true
+  soundEnabled: true,
+  printDirection: 'bottom_up',
+  showMemo: true
 };
 
 const TEMPLATES = {
@@ -186,7 +188,13 @@ class App {
     // 設定フォーム
     this.cfgStoreName = document.getElementById('cfg-store-name');
     this.cfgPaperWidth = document.getElementById('cfg-paper-width');
+    this.cfgPrintDirection = document.getElementById('cfg-print-direction');
+    this.cfgShowMemo = document.getElementById('cfg-show-memo');
     this.cfgQrSize = document.getElementById('cfg-qr-size');
+
+    // 案内メモ欄
+    this.prevMemoSection = document.getElementById('prev-memo-section');
+    this.animMemoSection = document.getElementById('anim-memo-section');
 
     // トースト & ヘッダー
     this.toastEl = document.getElementById('toast-notify');
@@ -278,9 +286,14 @@ class App {
       this.saveConfig({
         storeName: this.cfgStoreName.value.trim() || DEFAULT_CONFIG.storeName,
         paperWidth: this.cfgPaperWidth.value,
-        qrSize: parseInt(this.cfgQrSize.value, 10) || 7
+        qrSize: parseInt(this.cfgQrSize.value, 10) || 7,
+        printDirection: this.cfgPrintDirection ? this.cfgPrintDirection.value : 'bottom_up',
+        showMemo: this.cfgShowMemo ? this.cfgShowMemo.value === 'true' : true
       });
       this.closeSettings();
+      if (this.currentSelectedTable) {
+        this.updateStaticPreview(this.currentSelectedTable);
+      }
       this.showToast('設定を保存しました', 'success');
     });
 
@@ -331,7 +344,9 @@ class App {
       tableNo: table.label,
       orderUrl: table.url,
       qrSize: this.config.qrSize,
-      paperWidth: this.config.paperWidth
+      paperWidth: this.config.paperWidth,
+      printDirection: this.config.printDirection || 'bottom_up',
+      showMemo: this.config.showMemo !== false
     });
 
     // 3. 静的プレビュー更新
@@ -340,6 +355,9 @@ class App {
     // 4. アニメーションモーダルへ内容反映
     this.animStoreName.innerText = this.config.storeName || '兎 に 角';
     this.animTableNo.innerText = `【  ${table.label}  】`;
+    if (this.animMemoSection) {
+      this.animMemoSection.style.display = (this.config.showMemo !== false) ? 'block' : 'none';
+    }
     this.animFooter.innerHTML = `発行日時: ${new Date().toLocaleString('ja-JP')}`;
     this.animStatusText.innerText = '印字送信中...';
     this.animStatusText.style.color = '#34d399';
@@ -441,21 +459,16 @@ class App {
   // 静的プレビュー更新 (卓番用)
   updateStaticPreview(table) {
     this.prevStoreName.innerText = this.config.storeName || '兎 に 角';
-    this.prevSlipTitle.innerText = '【 モバイルオーダー 兼 お会計票 】';
+    this.prevSlipTitle.innerText = 'モバイルオーダー 兼 お会計票';
     this.prevTableSection.style.display = 'block';
     this.prevTableNo.innerText = `【  ${table.label}  】`;
+
+    if (this.prevMemoSection) {
+      this.prevMemoSection.style.display = (this.config.showMemo !== false) ? 'block' : 'none';
+    }
     
     this.prevOrderGuide.style.display = 'block';
-    this.prevOrderGuide.innerHTML = `
-      <div style="font-weight: bold; margin-bottom: 2px;">◆ ご 注 文 ◆</div>
-      <div>スマートフォンで下の<br>QRコードを読み取り<br>各自でご注文をお願いいたします</div>
-    `;
-
     this.prevCheckoutSection.style.display = 'block';
-    this.prevCheckoutSection.innerHTML = `
-      <div style="font-weight: bold; margin-bottom: 4px;">◆ お 会 計 ◆</div>
-      <div class="checkout-highlight">【この伝票をレジへお持ちください】</div>
-    `;
 
     this.prevFooter.innerHTML = `発行日時: ${new Date().toLocaleString('ja-JP')}`;
 
@@ -464,7 +477,9 @@ class App {
       tableNo: table.label,
       orderUrl: table.url,
       qrSize: this.config.qrSize,
-      paperWidth: this.config.paperWidth
+      paperWidth: this.config.paperWidth,
+      printDirection: this.config.printDirection || 'bottom_up',
+      showMemo: this.config.showMemo !== false
     });
 
     this.renderQrCode(this.prevQrBox, table.url);
@@ -547,6 +562,8 @@ class App {
     this.cfgStoreName.value = this.config.storeName;
     this.cfgPaperWidth.value = this.config.paperWidth;
     this.cfgQrSize.value = this.config.qrSize;
+    if (this.cfgPrintDirection) this.cfgPrintDirection.value = this.config.printDirection || 'bottom_up';
+    if (this.cfgShowMemo) this.cfgShowMemo.value = String(this.config.showMemo !== false);
   }
 
   showToast(message, type = 'normal') {
