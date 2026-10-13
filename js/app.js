@@ -4,13 +4,13 @@
  * 触感アニメーション・即時印刷・バーチャルサーマルプリンター演出
  */
 
-import { buildTableQrXml, buildCustomPrintXml } from './epos-builder.js?v=2.2';
-import { TABLES_DATA } from './tables-data.js?v=2.2';
+import { buildTableQrXml, buildCustomPrintXml } from './epos-builder.js?v=2.3';
+import { TABLES_DATA } from './tables-data.js?v=2.3';
 
 const DEFAULT_CONFIG = {
   storeName: '兎 に 角',
   paperWidth: '80',
-  qrSize: 7,
+  qrSize: 5,
   soundEnabled: true,
   printDirection: 'bottom_up',
   showMemo: true

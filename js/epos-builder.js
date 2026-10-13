@@ -39,7 +39,7 @@ function escapeXml(str) {
 /**
  * 全幅の黒背景白文字バナー文字列（左右スペースパディング付き）を生成
  */
-function createReverseBanner(text, targetCols = 44) {
+function createReverseBanner(text, targetCols = 40) {
   let displayWidth = 0;
   for (let i = 0; i < text.length; i++) {
     const code = text.charCodeAt(i);
@@ -59,7 +59,7 @@ function createReverseBanner(text, targetCols = 44) {
  * @param {string} params.storeName 店舗名（デフォルト: "兎 に 角"）
  * @param {string} params.tableNo 卓番（例: "T1", "T20", "予2"）
  * @param {string} params.orderUrl DiniiのモバイルオーダーGateway URL
- * @param {number} [params.qrSize=7] QRモジュールサイズ
+ * @param {number} [params.qrSize=5] QRモジュールサイズ
  * @param {string} [params.paperWidth="80"] 用紙幅 ("80" または "58")
  * @param {string} [params.printDirection="bottom_up"] 印字方向 ("bottom_up": 下部から印字・卓番カット側 / "top_down": 上部から)
  * @param {boolean} [params.showMemo=true] 手書き案内メモ欄（担当・人数・時間・プラン・おと・F・他）の有無
@@ -69,23 +69,20 @@ export function buildTableQrXml({
   storeName = '兎 に 角',
   tableNo = 'T1',
   orderUrl = '',
-  qrSize = 7,
+  qrSize = 5,
   paperWidth = '80',
   printDirection = 'bottom_up',
   showMemo = true
 }) {
   const is58mm = paperWidth === '58';
-  const targetCols = is58mm ? 32 : 44;
-  
-  // 80mm時は44文字（約528dot）で用紙幅いっぱいにフィット。58mm時は32文字（384dot）
-  const doubleSep = is58mm
-    ? '================================\n'
-    : '============================================\n';
-  const singleSep = is58mm 
-    ? '--------------------------------\n'
-    : '--------------------------------------------\n';
+  // 80mm時は40文字（480dot）、58mm時は30文字（360dot）
+  // 40文字にすることで、72mm/80mmのどのプリンター余白モードでも絶対に改行されません
+  const targetCols = is58mm ? 30 : 40;
+  const sep = is58mm
+    ? '------------------------------\n'
+    : '----------------------------------------\n';
 
-  // --- セクション定義 ---
+  // --- セクション定義 (上下方向を極力コンパクトに凝縮) ---
 
   // 1. ヘッダー（店舗名＆白抜き黒帯タイトル）
   const titleBanner = createReverseBanner(
@@ -95,88 +92,79 @@ export function buildTableQrXml({
 
   const headerBlock = `
     <!-- 店舗名 & タイトル -->
-    <text font="font_a" width="1" height="1">${doubleSep}</text>
     <text font="font_a" width="2" height="2" em="true">${escapeXml(storeName)}\n</text>
-    <feed unit="8"/>
+    <feed unit="4"/>
     <text font="font_a" width="1" height="1" em="true" reverse="true">${titleBanner}\n</text>
     <text font="font_a" width="1" height="1" reverse="false"/>
-    <text font="font_a" width="1" height="1">${doubleSep}\n</text>
   `;
 
-  // 2. テーブル番号（遠くからでも一目で分かる特大太字）
+  // 2. テーブル番号（コンパクトかつ遠くからでも見やすい太字倍角）
   const tableBlock = `
     <!-- テーブル番号 -->
-    <text font="font_a" width="1" height="1">テーブル番号\n</text>
-    <text font="font_a" width="3" height="3" em="true">【  ${escapeXml(tableNo)}  】\n\n</text>
+    <feed unit="6"/>
+    <text font="font_a" width="2" height="2" em="true">卓番: 【 ${escapeXml(tableNo)} 】\n</text>
   `;
 
-  // 3. 手書き案内メモ欄（担当・人数・時間・おと・F・他）
+  // 3. 手書き案内メモ欄（スタッフ記入用: 担当・人数・時間・おと・F・他）
   const memoBlock = showMemo ? `
-    <!-- 手書き案内プラン欄（スタッフ記入用） -->
-    <text font="font_a" width="1" height="1">${singleSep}</text>
-    <text font="font_a" width="1" height="1" em="true">【 ご案内プラン（手書きメモ欄）】\n</text>
-    <feed unit="12"/>
+    <!-- 手書きメモ欄 -->
+    <text font="font_a" width="1" height="1">${sep}</text>
     <text font="font_a" width="1" height="1" align="left">
 ${is58mm
-  ? ' 担当: _____    _____ 名\n'
-  : ' 担当: ________   ______ 名   ______ H / ______ \n'
+  ? ' 担当:____  ___名  ___H / ___\n'
+  : ' 担当: _______   _____名   _____H / _____ \n'
 }</text>
-    <feed unit="14"/>
+    <feed unit="8"/>
     <text font="font_a" width="1" height="1" align="left">
 ${is58mm
-  ? ' _____ H / _____\n おと: _____  ___ F  他: _____\n'
-  : ' おと: ________   ______ F    他: ______________\n'
+  ? ' おと:____  ___F   他:_______\n'
+  : ' おと: _______   _____F    他: __________ \n'
 }</text>
     <text align="center"/>
-    <feed unit="12"/>
-    <text font="font_a" width="1" height="1">${singleSep}\n</text>
+    <text font="font_a" width="1" height="1">${sep}</text>
   ` : '';
 
-  // 4. モバイルオーダー（ご 注 文）＆ QRコード（白抜き黒帯バナーで明瞭化）
+  // 4. モバイルオーダー（ご 注 文）＆ QRコード（コンパクト）
   const orderBanner = createReverseBanner(
-    is58mm ? '◆ ご注文（モバイル）◆' : '◆ ご 注 文（モバイルオーダー）◆',
+    is58mm ? '◆ ご注文（モバイル）◆' : '◆ ご注文（モバイルオーダー）◆',
     targetCols
   );
 
+  const effectiveQrSize = Math.max(4, Math.min(6, qrSize || 5));
+
   const orderBlock = `
     <!-- モバイルオーダー（ご 注 文） -->
+    <feed unit="6"/>
     <text font="font_a" width="1" height="1" em="true" reverse="true">${orderBanner}\n</text>
     <text font="font_a" width="1" height="1" reverse="false"/>
-    <feed unit="12"/>
-    <text font="font_a" width="1" height="1">スマートフォンで下の\nQRコードを読み取り\n各自でご注文をお願いいたします\n\n</text>
-
+    <feed unit="4"/>
+    <text font="font_a" width="1" height="1">スマホでQR読取 → ご注文ください\n</text>
+    <feed unit="6"/>
     <!-- QRコード印字 (Model 2, Error Correction Level M) -->
-    <symbol type="qrcode_model_2" level="level_m" width="${Math.max(4, Math.min(10, qrSize))}">${escapeXml(orderUrl)}</symbol>
-    <feed unit="20"/>
+    <symbol type="qrcode_model_2" level="level_m" width="${effectiveQrSize}">${escapeXml(orderUrl)}</symbol>
+    <feed unit="6"/>
   `;
 
-  // 5. お会計票（レジ持参案内・白抜き特大強調）
+  // 5. お会計票（レジ持参案内）
   const checkoutBanner = createReverseBanner(
     is58mm ? '◆ お 会 計 票 ◆' : '◆ お 会 計 票 ◆',
     targetCols
   );
-  const checkoutNotice = createReverseBanner(
-    is58mm ? '【伝票をレジへお持ち下さい】' : '【この伝票をレジへお持ちください】',
-    targetCols
-  );
 
   const checkoutBlock = `
-    <!-- お会計案内（レジ持参スタイル） -->
-    <text font="font_a" width="1" height="1">${singleSep}</text>
+    <!-- お会計案内 -->
+    <text font="font_a" width="1" height="1">${sep}</text>
     <text font="font_a" width="1" height="1" em="true" reverse="true">${checkoutBanner}\n</text>
     <text font="font_a" width="1" height="1" reverse="false"/>
-    <feed unit="12"/>
-    <text font="font_a" width="1" height="1" em="true" reverse="true">${checkoutNotice}\n</text>
-    <text font="font_a" width="1" height="1" reverse="false"/>
-    <feed unit="8"/>
-    <text font="font_a" width="1" height="1">※お会計の際、本票をレジカウンターへご提示ください\n</text>
-    <text font="font_a" width="1" height="1">${doubleSep}</text>
+    <feed unit="4"/>
+    <text font="font_a" width="1" height="1" em="true">【 この伝票をレジへお持ちください 】\n</text>
+    <text font="font_a" width="1" height="1">${sep}</text>
   `;
 
   // 6. 発行日時
   const footerBlock = `
     <!-- 発行日時 -->
-    <text font="font_b" width="1" height="1">発行日時: ${getFormattedDate()}\n</text>
+    <text font="font_b" width="1" height="1">発行: ${getFormattedDate()}\n</text>
   `;
 
   // --- 印字順序の制御 ---
@@ -208,11 +196,13 @@ ${is58mm
 
   return `<?xml version="1.0" encoding="utf-8"?>
 <epos-print xmlns="http://www.epson-pos.com/schemas/2011/03/epos-print">
+  <!-- 用紙幅設定: 80mm=800 / 58mm=580 （プリンターへ80mm幅を強制指定） -->
+  <layout type="receipt" width="${is58mm ? '580' : '800'}"/>
   <!-- 日本語言語設定（日本語・漢字・記号を正常印字するために必須） -->
   <text lang="ja"/>
   <text align="center"/>
   ${contentXml}
-  <feed unit="30"/>
+  <feed unit="8"/>
   <cut type="feed"/>
 </epos-print>`.trim();
 }
@@ -243,6 +233,8 @@ export function buildCustomPrintXml({
 
   return `<?xml version="1.0" encoding="utf-8"?>
 <epos-print xmlns="http://www.epson-pos.com/schemas/2011/03/epos-print">
+  <!-- 用紙幅設定: 80mm=800 / 58mm=580 -->
+  <layout type="receipt" width="${is58mm ? '580' : '800'}"/>
   <!-- 日本語言語設定 -->
   <text lang="ja"/>
   <text align="center"/>
@@ -271,11 +263,11 @@ export function buildCustomPrintXml({
 
   <text font="font_a" width="1" height="1">${singleSep}</text>
   ${footerText ? `<text font="font_b" width="1" height="1">${escapeXml(footerText)}\n</text>` : ''}
-  <text font="font_b" width="1" height="1">発行日時: ${getFormattedDate()}\n</text>
+  <text font="font_b" width="1" height="1">発行: ${getFormattedDate()}\n</text>
   <text font="font_a" width="1" height="1">${doubleSep}</text>
 
   <!-- 送り & カット -->
-  <feed unit="30"/>
+  <feed unit="8"/>
   <cut type="feed"/>
 </epos-print>`.trim();
 }
