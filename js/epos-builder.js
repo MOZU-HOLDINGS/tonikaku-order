@@ -54,13 +54,14 @@ function createReverseBanner(text, targetCols = 32) {
 
 /**
  * モバイルオーダー 兼 お会計票の ePOS-Print XML を生成
- * Diniiの58mm用紙設定（35桁）に合わせて最適化。上下方向も極限までコンパクトに設計。
+ * Diniiの58mm用紙設定（35桁）に合わせて最適化。
+ * 重要箇所（卓番・QR・お会計持参案内）を目立たせ、メリハリのある美しいレイアウトに調整。
  * 
  * @param {Object} params
  * @param {string} params.storeName 店舗名（デフォルト: "兎 に 角"）
  * @param {string} params.tableNo 卓番（例: "T1", "T20", "予2"）
  * @param {string} params.orderUrl DiniiのモバイルオーダーGateway URL
- * @param {number} [params.qrSize=5] QRモジュールサイズ
+ * @param {number} [params.qrSize=6] QRモジュールサイズ
  * @param {string} [params.paperWidth="58"] 用紙幅設定（Dinii仕様: "58"）
  * @param {string} [params.printDirection="bottom_up"] 印字方向 ("bottom_up": 下部から印字・卓番カット側 / "top_down": 上部から)
  * @param {boolean} [params.showMemo=true] 手書き案内メモ欄の有無
@@ -70,7 +71,7 @@ export function buildTableQrXml({
   storeName = '兎 に 角',
   tableNo = 'T1',
   orderUrl = '',
-  qrSize = 5,
+  qrSize = 6,
   paperWidth = '58',
   printDirection = 'bottom_up',
   showMemo = true
@@ -79,7 +80,7 @@ export function buildTableQrXml({
   const targetCols = 32;
   const sep = '--------------------------------\n';
 
-  // --- セクション定義 (上下方向を極力コンパクトに凝縮) ---
+  // --- セクション定義 ---
 
   // 1. ヘッダー（店舗名＆白抜き黒帯タイトル）
   const titleBanner = createReverseBanner('■ モバイルオーダー兼お会計票 ■', targetCols);
@@ -87,63 +88,82 @@ export function buildTableQrXml({
   const headerBlock = `
     <!-- 店舗名 & タイトル -->
     <text font="font_a" width="2" height="2" em="true">${escapeXml(storeName)}\n</text>
-    <feed unit="4"/>
-    <text font="font_a" width="1" height="1" em="true" reverse="true">${titleBanner}\n</text>
-    <text font="font_a" width="1" height="1" reverse="false"/>
-  `;
-
-  // 2. テーブル番号（遠くからでも見やすい太字倍角・1行集約）
-  const tableBlock = `
-    <!-- テーブル番号 -->
-    <feed unit="4"/>
-    <text font="font_a" width="2" height="2" em="true">卓番: 【 ${escapeXml(tableNo)} 】\n</text>
-  `;
-
-  // 3. 手書き案内メモ欄（スタッフ記入用: スペース小さめのコンパクト版）
-  const memoBlock = showMemo ? `
-    <!-- 手書きメモ欄 (アンダースコアをコンパクト化) -->
-    <text font="font_a" width="1" height="1">${sep}</text>
-    <text font="font_a" width="1" height="1" align="left"> 担当:___  ___名  ___H / ___\n</text>
     <feed unit="6"/>
-    <text font="font_a" width="1" height="1" align="left"> おと:___  ___F   他:______\n</text>
-    <text align="center"/>
+    <text font="font_a" width="1" height="1" em="true" reverse="true">${titleBanner}\n</text>
+    <text font="font_a" width="1" height="1" em="false" reverse="false"/>
+    <feed unit="10"/>
+  `;
+
+  // 2. テーブル番号（最重要項目・遠くからでも一目で分かる特大太字）
+  const cleanTableNo = escapeXml(tableNo);
+  const tableText = (getDisplayWidth(`【  ${cleanTableNo}  】`) * 3 <= targetCols)
+    ? `【  ${cleanTableNo}  】`
+    : `【 ${cleanTableNo} 】`;
+  const tableWidth = (getDisplayWidth(tableText) * 3 <= targetCols) ? 3 : 2;
+
+  const tableBlock = `
+    <!-- テーブル番号（最重要項目・特大強調） -->
+    <text font="font_a" width="1" height="1">テーブル番号\n</text>
+    <feed unit="6"/>
+    <text font="font_a" width="${tableWidth}" height="3" em="true">${tableText}\n</text>
+    <feed unit="10"/>
+  `;
+
+  // 3. 手書き案内メモ欄（スタッフ記入用: 担当・名・/・おと・F・他）
+  // 担当_と/_のスペースを拡張、H単位削除、他_のスペースを短縮
+  const memoBlock = showMemo ? `
+    <!-- 手書き案内メモ欄 -->
     <text font="font_a" width="1" height="1">${sep}</text>
+    <text font="font_a" width="1" height="1" em="true">【 ご案内メモ 】\n</text>
+    <feed unit="8"/>
+    <text font="font_a" width="1" height="1" align="left">担当:______  ___名  ___ / ______\n</text>
+    <feed unit="14"/>
+    <text font="font_a" width="1" height="1" align="left"> おと:_____   ___F    他:___\n</text>
+    <text align="center"/>
+    <feed unit="8"/>
+    <text font="font_a" width="1" height="1">${sep}</text>
+    <feed unit="10"/>
   ` : '';
 
-  // 4. モバイルオーダー（ご 注 文）＆ QRコード（コンパクト）
+  // 4. モバイルオーダー（ご 注 文）＆ QRコード（スキャンしやすい存在感あるサイズ）
   const orderBanner = createReverseBanner('◆ ご注文（モバイルオーダー）◆', targetCols);
-  const effectiveQrSize = Math.max(4, Math.min(6, qrSize || 5));
+  const effectiveQrSize = Math.max(5, Math.min(7, qrSize || 6));
 
   const orderBlock = `
     <!-- モバイルオーダー（ご 注 文） -->
-    <feed unit="4"/>
     <text font="font_a" width="1" height="1" em="true" reverse="true">${orderBanner}\n</text>
-    <text font="font_a" width="1" height="1" reverse="false"/>
-    <feed unit="3"/>
-    <text font="font_a" width="1" height="1">スマホでQR読取 → ご注文\n</text>
-    <feed unit="4"/>
+    <text font="font_a" width="1" height="1" em="false" reverse="false"/>
+    <feed unit="8"/>
+    <text font="font_a" width="1" height="1">スマートフォンで下の\nQRコードを読み取りご注文ください\n</text>
+    <feed unit="10"/>
     <!-- QRコード印字 (Model 2, Error Correction Level M) -->
     <symbol type="qrcode_model_2" level="level_m" width="${effectiveQrSize}">${escapeXml(orderUrl)}</symbol>
-    <feed unit="4"/>
+    <feed unit="14"/>
   `;
 
-  // 5. お会計票（レジ持参案内）
+  // 5. お会計票（レジ持参案内・白抜き太字で強調）
   const checkoutBanner = createReverseBanner('◆ お 会 計 票 ◆', targetCols);
+  const checkoutNotice = createReverseBanner('【伝票をレジへお持ちください】', targetCols);
 
   const checkoutBlock = `
-    <!-- お会計案内 -->
+    <!-- お会計案内（レジ持参スタイル） -->
     <text font="font_a" width="1" height="1">${sep}</text>
     <text font="font_a" width="1" height="1" em="true" reverse="true">${checkoutBanner}\n</text>
-    <text font="font_a" width="1" height="1" reverse="false"/>
-    <feed unit="3"/>
-    <text font="font_a" width="1" height="1" em="true">【伝票をレジへお持ちください】\n</text>
+    <text font="font_a" width="1" height="1" em="false" reverse="false"/>
+    <feed unit="8"/>
+    <text font="font_a" width="1" height="2" em="true" reverse="true">${checkoutNotice}\n</text>
+    <text font="font_a" width="1" height="1" em="false" reverse="false"/>
+    <feed unit="8"/>
+    <text font="font_a" width="1" height="1">※お会計の際レジへご提示ください\n</text>
+    <feed unit="6"/>
     <text font="font_a" width="1" height="1">${sep}</text>
+    <feed unit="8"/>
   `;
 
   // 6. 発行日時
   const footerBlock = `
     <!-- 発行日時 -->
-    <text font="font_b" width="1" height="1">発行: ${getFormattedDate()}\n</text>
+    <text font="font_b" width="1" height="1">発行日時: ${getFormattedDate()}\n</text>
   `;
 
   // --- 印字順序の制御 ---
@@ -181,7 +201,7 @@ export function buildTableQrXml({
   <text lang="ja"/>
   <text align="center"/>
   ${contentXml}
-  <feed unit="6"/>
+  <feed unit="8"/>
   <cut type="feed"/>
 </epos-print>`.trim();
 }

@@ -4,13 +4,13 @@
  * 触感アニメーション・即時印刷・バーチャルサーマルプリンター演出
  */
 
-import { buildTableQrXml, buildCustomPrintXml } from './epos-builder.js?v=2.4';
-import { TABLES_DATA } from './tables-data.js?v=2.4';
+import { buildTableQrXml, buildCustomPrintXml } from './epos-builder.js?v=2.5';
+import { TABLES_DATA } from './tables-data.js?v=2.5';
 
 const DEFAULT_CONFIG = {
   storeName: '兎 に 角',
   paperWidth: '58', // Dinii設定連動: 58mm (35桁仕様 / 80mm用紙対応)
-  qrSize: 5,
+  qrSize: 6,
   soundEnabled: true,
   printDirection: 'bottom_up',
   showMemo: true
@@ -152,7 +152,7 @@ class App {
       <span class="chip-item" style="background: rgba(16,185,129,0.15); border: 1px solid rgba(16,185,129,0.4); color: #34d399; font-size: 11px; padding: 2px 8px; border-radius: 4px;">🖨️ 用紙設定: 58mm (Dinii対応・35桁仕様)</span>
       <span class="chip-item" style="background: rgba(59,130,246,0.15); border: 1px solid rgba(59,130,246,0.4); color: #60a5fa; font-size: 11px; padding: 2px 8px; border-radius: 4px;">↕️ 印字順: ${isBottomUp ? '下部から(卓番カット側)' : '上部から(標準順序)'}</span>
       <span class="chip-item" style="background: rgba(245,158,11,0.15); border: 1px solid rgba(245,158,11,0.4); color: #fbbf24; font-size: 11px; padding: 2px 8px; border-radius: 4px;">✍️ 手書きメモ: ${hasMemo ? '有効' : '非表示'}</span>
-      <span class="chip-item" style="background: rgba(168,85,247,0.15); border: 1px solid rgba(168,85,247,0.4); color: #c084fc; font-size: 11px; padding: 2px 8px; border-radius: 4px;">📏 縦幅コンパクト</span>
+      <span class="chip-item" style="background: rgba(168,85,247,0.15); border: 1px solid rgba(168,85,247,0.4); color: #c084fc; font-size: 11px; padding: 2px 8px; border-radius: 4px;">✨ メリハリ最適化（卓番強調・視認性UP）</span>
     `;
   }
 
