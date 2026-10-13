@@ -4,8 +4,8 @@
  * 触感アニメーション・即時印刷・バーチャルサーマルプリンター演出
  */
 
-import { buildTableQrXml, buildCustomPrintXml } from './epos-builder.js';
-import { TABLES_DATA } from './tables-data.js';
+import { buildTableQrXml, buildCustomPrintXml } from './epos-builder.js?v=2.2';
+import { TABLES_DATA } from './tables-data.js?v=2.2';
 
 const DEFAULT_CONFIG = {
   storeName: '兎 に 角',
@@ -112,7 +112,14 @@ class App {
     try {
       const saved = localStorage.getItem('tonikaku_print_cfg');
       if (saved) {
-        return { ...DEFAULT_CONFIG, ...JSON.parse(saved) };
+        const parsed = JSON.parse(saved);
+        return {
+          ...DEFAULT_CONFIG,
+          ...parsed,
+          paperWidth: parsed.paperWidth || '80',
+          printDirection: parsed.printDirection || 'bottom_up',
+          showMemo: parsed.showMemo !== undefined ? parsed.showMemo : true
+        };
       }
     } catch (e) {
       console.warn('Config load error:', e);
@@ -129,9 +136,25 @@ class App {
     }
     this.sound.enabled = this.config.soundEnabled;
     this.updateHeaderStoreName();
+    this.updateConfigChipsUI();
     if (this.currentSelectedTable) {
       this.updateStaticPreview(this.currentSelectedTable);
     }
+  }
+
+  updateConfigChipsUI() {
+    const container = document.getElementById('active-config-chips');
+    if (!container) return;
+    const is80 = (this.config.paperWidth || '80') === '80';
+    const isBottomUp = (this.config.printDirection || 'bottom_up') === 'bottom_up';
+    const hasMemo = (this.config.showMemo !== false);
+
+    container.innerHTML = `
+      <span class="chip-item" style="background: rgba(16,185,129,0.15); border: 1px solid rgba(16,185,129,0.4); color: #34d399; font-size: 11px; padding: 2px 8px; border-radius: 4px;">🖨️ 用紙: ${is80 ? '80mm (全幅44文字)' : '58mm (32文字)'}</span>
+      <span class="chip-item" style="background: rgba(59,130,246,0.15); border: 1px solid rgba(59,130,246,0.4); color: #60a5fa; font-size: 11px; padding: 2px 8px; border-radius: 4px;">↕️ 印字順: ${isBottomUp ? '下部から(卓番カット側)' : '上部から(標準順序)'}</span>
+      <span class="chip-item" style="background: rgba(245,158,11,0.15); border: 1px solid rgba(245,158,11,0.4); color: #fbbf24; font-size: 11px; padding: 2px 8px; border-radius: 4px;">✍️ 手書きメモ: ${hasMemo ? '有効' : '非表示'}</span>
+      <span class="chip-item" style="background: rgba(168,85,247,0.15); border: 1px solid rgba(168,85,247,0.4); color: #c084fc; font-size: 11px; padding: 2px 8px; border-radius: 4px;">⬛ 反転黒帯: 全幅適用</span>
+    `;
   }
 
   initElements() {
@@ -201,6 +224,7 @@ class App {
     this.headerStoreName = document.getElementById('header-store-name');
 
     this.updateHeaderStoreName();
+    this.updateConfigChipsUI();
   }
 
   updateSoundButtonUI() {

@@ -7,7 +7,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="theme-color" content="#0b0f14">
   <title>兎に角 - モバイルオーダー兼お会計票 印刷システム</title>
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/style.css?v=2.2">
   <!-- スタンドアローンQRコード描画ライブラリ -->
   <script src="js/qrcode.min.js"></script>
 </head>
@@ -18,7 +18,10 @@
     <div class="header-brand">
       <div class="brand-icon">🧾</div>
       <div>
-        <div class="brand-title" id="header-store-name">兎 に 角</div>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span class="brand-title" id="header-store-name">兎 に 角</span>
+          <span style="background: #2563eb; color: #ffffff; font-size: 10px; font-weight: bold; padding: 2px 7px; border-radius: 4px; letter-spacing: 0.05em;">v2.2 最新版</span>
+        </div>
         <div class="brand-subtitle">モバイルオーダー 兼 お会計票 印刷</div>
       </div>
     </div>
@@ -44,6 +47,12 @@
         <div>
           <div class="banner-text">⚡ 卓番を押すと即座に印刷されます</div>
           <div class="banner-sub">全29席（フロア配置順）/ 数秒間プレビュー表示後に自動復帰</div>
+          <div class="active-config-chips" id="active-config-chips" style="margin-top: 8px; display: flex; flex-wrap: wrap; gap: 6px;">
+            <span class="chip-item" style="background: rgba(16,185,129,0.15); border: 1px solid rgba(16,185,129,0.4); color: #34d399; font-size: 11px; padding: 2px 8px; border-radius: 4px;">🖨️ 用紙: 80mm</span>
+            <span class="chip-item" style="background: rgba(59,130,246,0.15); border: 1px solid rgba(59,130,246,0.4); color: #60a5fa; font-size: 11px; padding: 2px 8px; border-radius: 4px;">↕️ 印字順: 下部から(卓番カット側)</span>
+            <span class="chip-item" style="background: rgba(245,158,11,0.15); border: 1px solid rgba(245,158,11,0.4); color: #fbbf24; font-size: 11px; padding: 2px 8px; border-radius: 4px;">✍️ 手書きメモ: 有効</span>
+            <span class="chip-item" style="background: rgba(168,85,247,0.15); border: 1px solid rgba(168,85,247,0.4); color: #c084fc; font-size: 11px; padding: 2px 8px; border-radius: 4px;">⬛ 反転黒帯: 有効</span>
+          </div>
         </div>
       </div>
 
@@ -301,6 +310,6 @@
   <div class="toast" id="toast-notify"></div>
 
   <!-- Scripts -->
-  <script type="module" src="js/app.js"></script>
+  <script type="module" src="js/app.js?v=2.2"></script>
 </body>
 </html>
