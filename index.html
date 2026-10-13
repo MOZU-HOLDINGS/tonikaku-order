@@ -18,10 +18,7 @@
     <div class="header-brand">
       <div class="brand-icon">🧾</div>
       <div>
-        <div style="display: flex; align-items: center; gap: 8px;">
-          <span class="brand-title" id="header-store-name">兎 に 角</span>
-          <span style="background: #2563eb; color: #ffffff; font-size: 10px; font-weight: bold; padding: 2px 7px; border-radius: 4px; letter-spacing: 0.05em;">v2.6 Dinii 58mm最適化（卓番強調・メモ調整版）</span>
-        </div>
+        <div class="brand-title" id="header-store-name">兎 に 角</div>
         <div class="brand-subtitle">モバイルオーダー 兼 お会計票 印刷</div>
       </div>
     </div>
@@ -43,19 +40,6 @@
 
     <!-- Tab 1: Table Quick Print -->
     <section class="tab-pane active" id="tab-tables">
-      <div class="section-banner">
-        <div>
-          <div class="banner-text">⚡ 卓番を押すと即座に印刷されます</div>
-          <div class="banner-sub">全29席（フロア配置順）/ 数秒間プレビュー表示後に自動復帰</div>
-          <div class="active-config-chips" id="active-config-chips" style="margin-top: 8px; display: flex; flex-wrap: wrap; gap: 6px;">
-            <span class="chip-item" style="background: rgba(16,185,129,0.15); border: 1px solid rgba(16,185,129,0.4); color: #34d399; font-size: 11px; padding: 2px 8px; border-radius: 4px;">🖨️ 用紙設定: 58mm (Dinii対応・35桁仕様)</span>
-            <span class="chip-item" style="background: rgba(59,130,246,0.15); border: 1px solid rgba(59,130,246,0.4); color: #60a5fa; font-size: 11px; padding: 2px 8px; border-radius: 4px;">↕️ 印字順: 下部から(卓番カット側)</span>
-            <span class="chip-item" style="background: rgba(245,158,11,0.15); border: 1px solid rgba(245,158,11,0.4); color: #fbbf24; font-size: 11px; padding: 2px 8px; border-radius: 4px;">✍️ 手書きメモ: 有効</span>
-            <span class="chip-item" style="background: rgba(168,85,247,0.15); border: 1px solid rgba(168,85,247,0.4); color: #c084fc; font-size: 11px; padding: 2px 8px; border-radius: 4px;">✨ 卓番・重要部強調</span>
-          </div>
-        </div>
-      </div>
-
       <!-- テーブル一覧（ユーザー指定順） -->
       <div class="table-grid" id="table-grid">
         <!-- JSで自動生成 -->
@@ -66,9 +50,9 @@
     <section class="tab-pane" id="tab-preview">
       <div class="preview-container">
         <div class="receipt-paper" id="receipt-preview-box" style="padding: 14px 16px; max-width: 310px;">
-          <!-- ヘッダー -->
-          <div class="receipt-store" id="prev-store-name" style="font-size: 22px; font-weight: 900; margin-bottom: 3px;">兎 に 角</div>
-          <div><span class="receipt-badge-reversed" id="prev-slip-title" style="padding: 3px 10px; font-size: 11px;">■ モバイルオーダー兼お会計票 ■</span></div>
+          <!-- ヘッダー（黒背景なし通常表示） -->
+          <div class="receipt-store" id="prev-store-name" style="font-size: 22px; font-weight: 900; margin-bottom: 2px;">兎 に 角</div>
+          <div id="prev-slip-title" style="font-size: 11.5px; font-weight: bold; color: #444; margin: 2px 0 6px; letter-spacing: 0.05em;">― モバイルオーダー兼お会計票 ―</div>
           
           <!-- テーブル番号（最重要項目・特大強調） -->
           <div id="prev-table-section" style="margin: 6px 0;">
@@ -91,14 +75,16 @@
             </div>
           </div>
 
-          <!-- ご注文案内 -->
-          <div class="receipt-text" id="prev-order-guide" style="margin: 6px 0 4px;">
-            <div class="receipt-section-banner" style="margin: 3px auto; padding: 3px 10px; font-size: 10.5px;">◆ ご注文（モバイルオーダー）◆</div>
-            <div style="font-size: 10.5px; color: #333; line-height: 1.4;">スマートフォンで下の<br>QRコードを読み取りご注文ください</div>
+          <!-- ご注文案内（モバイルオーダー強調） -->
+          <div class="receipt-text" id="prev-order-guide" style="margin: 8px 0 6px;">
+            <div class="receipt-section-banner" style="margin: 4px auto; padding: 4px 12px; font-size: 11px; letter-spacing: 0.05em;">■ モバイルオーダー（ご注文）■</div>
+            <div style="font-size: 13px; font-weight: 900; color: #000; margin: 4px 0 2px;">【ここから簡単にご注文できます】</div>
+            <div style="font-size: 10px; color: #333; line-height: 1.4;">スマホのカメラをQRにかざすだけ！<br>追加注文もこちらから可能です</div>
           </div>
           
           <!-- QRコードボックス -->
           <div class="receipt-qr-box" id="prev-qr-box" style="margin: 6px auto; padding: 4px;"></div>
+          <div style="font-size: 10px; font-weight: bold; color: #111; margin-bottom: 6px;">▲ こちらのQRコードからご注文 ▲</div>
 
           <!-- お会計案内 -->
           <div class="receipt-checkout" id="prev-checkout-section" style="margin-top: 6px;">
@@ -184,7 +170,7 @@
         <div class="laser-scan-line"></div>
         <div class="animated-receipt" id="anim-receipt" style="padding: 12px 14px;">
           <div class="receipt-store" id="anim-store-name" style="font-size: 20px; font-weight: 900; margin-bottom: 2px;">兎 に 角</div>
-          <div><span class="receipt-badge-reversed" id="anim-slip-badge" style="padding: 2px 8px; font-size: 10.5px;">■ モバイルオーダー兼お会計票 ■</span></div>
+          <div id="anim-slip-badge" style="font-size: 10.5px; font-weight: bold; color: #444; margin: 2px 0 4px; letter-spacing: 0.05em;">― モバイルオーダー兼お会計票 ―</div>
           
           <div style="font-size: 10px; color: #555; margin-top: 4px;">テーブル番号</div>
           <div class="receipt-title" id="anim-table-no" style="font-size: 26px; font-weight: 900; margin: 2px 0 4px;">【  T1  】</div>
@@ -204,12 +190,14 @@
             </div>
           </div>
 
-          <div class="receipt-text" id="anim-order-guide" style="margin: 4px 0 2px;">
-            <div class="receipt-section-banner" style="margin: 2px auto; padding: 2px 8px; font-size: 10px;">◆ ご注文（モバイルオーダー）◆</div>
-            <div style="font-size: 9.5px; color: #333; line-height: 1.3;">スマートフォンで下の<br>QRコードを読み取りご注文ください</div>
+          <div class="receipt-text" id="anim-order-guide" style="margin: 6px 0 4px;">
+            <div class="receipt-section-banner" style="margin: 3px auto; padding: 3px 10px; font-size: 10.5px;">■ モバイルオーダー（ご注文）■</div>
+            <div style="font-size: 12px; font-weight: 900; color: #000; margin: 3px 0 2px;">【ここから簡単にご注文できます】</div>
+            <div style="font-size: 9.5px; color: #333; line-height: 1.3;">スマホのカメラをQRにかざすだけ！<br>追加注文もこちらから可能です</div>
           </div>
           
           <div class="receipt-qr-box" id="anim-qr-box" style="margin: 4px auto; padding: 3px;"></div>
+          <div style="font-size: 9.5px; font-weight: bold; color: #111; margin-bottom: 4px;">▲ こちらのQRコードからご注文 ▲</div>
 
           <div id="anim-checkout-section" style="margin-top: 4px;">
             <div class="receipt-section-banner" style="margin: 2px auto; padding: 2px 8px; font-size: 10px;">◆ お 会 計 票 ◆</div>
@@ -237,7 +225,10 @@
   <div class="modal-overlay" id="settings-modal">
     <div class="modal-card">
       <div class="modal-header">
-        <div class="modal-title">⚙️ システム設定 & プリンター指定</div>
+        <div class="modal-title" style="display: flex; align-items: center; gap: 8px;">
+          <span>⚙️ システム設定 & プリンター指定</span>
+          <span style="font-size: 10px; background: rgba(59, 130, 246, 0.2); border: 1px solid rgba(59, 130, 246, 0.4); color: #60a5fa; padding: 2px 8px; border-radius: 4px; font-weight: normal;">v2.7 Dinii 58mm仕様</span>
+        </div>
         <button class="icon-btn" id="btn-close-settings">✕</button>
       </div>
 
@@ -268,10 +259,10 @@
       <div class="form-group">
         <label for="cfg-print-direction">印字方向（順序）</label>
         <select id="cfg-print-direction" class="form-select">
-          <option value="bottom_up" selected>下部から印字（卓番がカット側・おすすめ）</option>
-          <option value="top_down">上部から印字（通常）</option>
+          <option value="top_down" selected>上部から印字（通常・おすすめ）</option>
+          <option value="bottom_up">下部から印字（卓番カット側）</option>
         </select>
-        <div class="form-help">※「下部から印字」にすると、排紙カット時に卓番・店舗名が一番上（手元）に来ます。</div>
+        <div class="form-help">※「上部から印字」にすると、店舗名・卓番・メモ・QR・お会計票の順序で出力されます。</div>
       </div>
 
       <div class="form-group">
@@ -303,6 +294,6 @@
   <div class="toast" id="toast-notify"></div>
 
   <!-- Scripts -->
-  <script type="module" src="js/app.js?v=2.6"></script>
+  <script type="module" src="js/app.js?v=2.7"></script>
 </body>
 </html>

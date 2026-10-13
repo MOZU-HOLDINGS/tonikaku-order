@@ -84,7 +84,7 @@ export function buildTableQrXml({
   orderUrl = '',
   qrSize = 6,
   paperWidth = '58',
-  printDirection = 'bottom_up',
+  printDirection = 'top_down',
   showMemo = true
 }) {
   // Diniiの58mm/35桁設定に合わせて32桁を標準基準（絶対に改行されない安全設計）
@@ -93,15 +93,12 @@ export function buildTableQrXml({
 
   // --- セクション定義 ---
 
-  // 1. ヘッダー（店舗名＆白抜き黒帯タイトル）
-  const titleBanner = createReverseBanner('■ モバイルオーダー兼お会計票 ■', targetCols);
-
+  // 1. ヘッダー（店舗名＆通常テキストタイトル・黒背景なし）
   const headerBlock = `
-    <!-- 店舗名 & タイトル -->
+    <!-- 店舗名 & タイトル（黒背景なし通常印字） -->
     <text font="font_a" width="2" height="2" em="true">${escapeXml(storeName)}\n</text>
     <feed unit="6"/>
-    <text font="font_a" width="1" height="1" em="true" reverse="true">${titleBanner}\n</text>
-    <text font="font_a" width="1" height="1" em="false" reverse="false"/>
+    <text font="font_a" width="1" height="1" em="true">― モバイルオーダー兼お会計票 ―\n</text>
     <feed unit="10"/>
   `;
 
@@ -136,20 +133,24 @@ export function buildTableQrXml({
     <feed unit="10"/>
   ` : '';
 
-  // 4. モバイルオーダー（ご 注 文）＆ QRコード（スキャンしやすい存在感あるサイズ）
-  const orderBanner = createReverseBanner('◆ ご注文（モバイルオーダー）◆', targetCols);
+  // 4. モバイルオーダー（ご 注 文）＆ QRコード（ここから頼めると一目でわかる特大強調）
+  const orderBanner = createReverseBanner('■ モバイルオーダー（ご注文）■', targetCols);
   const effectiveQrSize = Math.max(5, Math.min(7, qrSize || 6));
 
   const orderBlock = `
-    <!-- モバイルオーダー（ご 注 文） -->
+    <!-- モバイルオーダー（ここから頼めると一目でわかる視認強調セクション） -->
     <text font="font_a" width="1" height="1" em="true" reverse="true">${orderBanner}\n</text>
     <text font="font_a" width="1" height="1" em="false" reverse="false"/>
     <feed unit="8"/>
-    <text font="font_a" width="1" height="1">スマートフォンで下の\nQRコードを読み取りご注文ください\n</text>
+    <text font="font_a" width="1" height="2" em="true">【ここから簡単にご注文できます】\n</text>
+    <feed unit="6"/>
+    <text font="font_a" width="1" height="1">スマホのカメラをQRにかざすだけ！\n追加注文もこちらから可能です\n</text>
     <feed unit="10"/>
     <!-- QRコード印字 (Model 2, Error Correction Level M) -->
     <symbol type="qrcode_model_2" level="level_m" width="${effectiveQrSize}">${escapeXml(orderUrl)}</symbol>
-    <feed unit="14"/>
+    <feed unit="8"/>
+    <text font="font_a" width="1" height="1" em="true">▲ こちらのQRコードからご注文 ▲\n</text>
+    <feed unit="12"/>
   `;
 
   // 5. お会計票（レジ持参案内・白抜き太字で強調）

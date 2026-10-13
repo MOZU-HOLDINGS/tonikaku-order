@@ -4,15 +4,15 @@
  * 触感アニメーション・即時印刷・バーチャルサーマルプリンター演出
  */
 
-import { buildTableQrXml, buildCustomPrintXml } from './epos-builder.js?v=2.6';
-import { TABLES_DATA } from './tables-data.js?v=2.6';
+import { buildTableQrXml, buildCustomPrintXml } from './epos-builder.js?v=2.7';
+import { TABLES_DATA } from './tables-data.js?v=2.7';
 
 const DEFAULT_CONFIG = {
   storeName: '兎 に 角',
   paperWidth: '58', // Dinii設定連動: 58mm (35桁仕様 / 80mm用紙対応)
   qrSize: 6,
   soundEnabled: true,
-  printDirection: 'bottom_up',
+  printDirection: 'top_down',
   showMemo: true
 };
 
@@ -117,7 +117,7 @@ class App {
           ...DEFAULT_CONFIG,
           ...parsed,
           paperWidth: parsed.paperWidth || '58',
-          printDirection: parsed.printDirection || 'bottom_up',
+          printDirection: parsed.printDirection || 'top_down',
           showMemo: parsed.showMemo !== undefined ? parsed.showMemo : true
         };
       }
@@ -368,7 +368,7 @@ class App {
       orderUrl: table.url,
       qrSize: this.config.qrSize,
       paperWidth: this.config.paperWidth,
-      printDirection: this.config.printDirection || 'bottom_up',
+      printDirection: this.config.printDirection || 'top_down',
       showMemo: this.config.showMemo !== false
     });
 
@@ -482,7 +482,7 @@ class App {
   // 静的プレビュー更新 (卓番用)
   updateStaticPreview(table) {
     this.prevStoreName.innerText = this.config.storeName || '兎 に 角';
-    this.prevSlipTitle.innerText = 'モバイルオーダー 兼 お会計票';
+    this.prevSlipTitle.innerText = '― モバイルオーダー兼お会計票 ―';
     this.prevTableSection.style.display = 'block';
     this.prevTableNo.innerText = `【  ${table.label}  】`;
 
@@ -501,7 +501,7 @@ class App {
       orderUrl: table.url,
       qrSize: this.config.qrSize,
       paperWidth: this.config.paperWidth,
-      printDirection: this.config.printDirection || 'bottom_up',
+      printDirection: this.config.printDirection || 'top_down',
       showMemo: this.config.showMemo !== false
     });
 
